@@ -1,0 +1,26 @@
+table,th,td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 500px;
+}
+
+
+.win {
+    color: green;
+    background-color: lightgreen;
+}
+
+.loss {
+    background-color: lightcoral;
+
+    color: red;
+
+}
+
+.tie {
+    background-color: lightyellow;
+}
