@@ -1,0 +1,10 @@
+#pokemonContainer {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+}
+
+
+#pokemonImage {
+    width: 250px;
+}

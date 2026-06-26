@@ -12,17 +12,26 @@
 <body>
 
     <h1>PokeDex App</h1>
+    <div id="searchSection">
+        <input id="searchBar" type="text" placeholder="Enter Pokémon name...">
+        <button id="searchBtn">Search!</button>
+        <p id="error" class="error"></p>
+    </div>
+    <div id="pokemonContainer">
 
-    <input id="searchBar" type="text" placeholder="Enter Pokémon name...">
-    <button id="searchBtn">Search!</button>
+        <div id="pokemonInfo">
+            <p>Name: <span id="name"></span></p>
+            <p>Height: <span id="height"></span>M</p>
+            <p>Weight: <span id="weight"></span>KG</p>
+            <p>Type: <span id="type"></span></p>
+            <p>Abilities: <span id="abilities"></span></p>
+        </div>
 
-    <p>Name: <span id="name"></span></p>
-    <p>Height: <span id="height"></span></p>
-    <p>Weight: <span id="weight"></span></p>
-    <p>Type: <span id="type"></span></p>
-    <p>Abilities: <span id="abilities"></span></p>
-    
-    <img id="pokemonImage" alt="Pokemon Image">
+        <img id="pokemonImage">
+        
+
+    </div>
+
     <script src="script.js"></script>
 </body>
 

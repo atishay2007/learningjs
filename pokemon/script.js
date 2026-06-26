@@ -1,13 +1,15 @@
 console.log("Connected");
-const searchBar = document.querySelector("#searchBar");
-const searchBtn = document.querySelector("#searchBtn");
-const name = document.querySelector("#name");
-const height = document.querySelector("#height");
-const weight = document.querySelector("#weight");
-const type = document.querySelector("#type");
-const abilities = document.querySelector("#abilities");
-const pokemonImage = document.querySelector("#pokemonImage");
-
+const $ = selector => document.querySelector(selector);
+const searchBar = $("#searchBar");
+const searchBtn = $("#searchBtn");
+const name = $("#name");
+const height = $("#height");
+const weight = $("#weight");
+const type = $("#type");
+const abilities = $("#abilities");
+const pokemonImage = $("#pokemonImage");
+const searchSection = $("#searchSection");
+const errorText = $("#error");
 
 searchBtn.addEventListener("click", () => searchPokemon(searchBar.value));
 searchBar.addEventListener("keydown", (event) => {
@@ -15,18 +17,54 @@ searchBar.addEventListener("keydown", (event) => {
         searchPokemon(searchBar.value);
     }
 });
+
+function displayPokemon(data) {
+    errorText.textContent = "";
+    searchBar.value = "";
+    name.textContent = data.name;
+    height.textContent = data.height / 10;
+    weight.textContent = data.weight / 10;
+    type.textContent = getNames(data, "types", "type");
+    abilities.textContent = getNames(data, "abilities", "ability");
+    pokemonImage.src = data.sprites.other["official-artwork"].front_default;
+    searchBar.focus();
+}
+
+function getNames(data, arrayKey, objKey) {
+    const names = data[arrayKey].map(item => item[objKey].name);
+    return names.join(", ")
+}
+
+function clearPokemon() {
+    name.textContent = "";
+    height.textContent = "";
+    weight.textContent = "";
+    type.textContent = "";
+    abilities.textContent = "";
+    pokemonImage.src = "";
+}
+
 async function searchPokemon(pokemonName) {
 
-    pokemonName = pokemonName.toLowerCase();
-    console.log(pokemonName);
-    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    try {
 
-    name.textContent = data.name;
-    height.textContent = data.height;
-    weight.textContent = data.weight;
+        pokemonName = pokemonName.trim().toLowerCase();
+        console.log(pokemonName);
+        const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+        const response = await fetch(url);
+        console.log(response);
+        if (!response.ok) {
+            throw new Error("Pokemon not found");
+        }
+        const data = await response.json();
 
-    console.log(response);
+        displayPokemon(data);
 
+        console.log(data);
+    }
+    catch (error) {
+        clearPokemon();
+        errorText.textContent = error.message;
+        console.log(error.message);
+    }
 }
