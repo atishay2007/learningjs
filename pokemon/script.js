@@ -86,7 +86,7 @@ async function searchPokemon(pokemonName) {
         searchBar.value = "";
         searchBar.focus();
         displayPokemon(data);
-
+        displayStats(data);
         console.log(data);
     }
     catch (error) {
@@ -99,7 +99,16 @@ async function searchPokemon(pokemonName) {
         searchBtn.disabled = false;
         searchBtn.textContent = "Search";
     }
+}
 
+function displayStats(data) {
+    stats.replaceChildren();
+    console.log(data.stats);
+    for (const stat of data.stats) {
+        const p = document.createElement("p");
+        p.textContent = `${capitalize(stat.stat.name)}: ${stat.base_stat}`
+        stats.appendChild(p);
+    }
 }
 
 function randomPokemon() {
