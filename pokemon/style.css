@@ -6,5 +6,6 @@
 
 
 #pokemonImage {
+    display: none;
     width: 250px;
 }

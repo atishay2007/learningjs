@@ -1,4 +1,12 @@
+import { capitalize } from "../util.js";
+
 console.log("Connected");
+
+const MAX_POKEMON = 700;
+const HEIGHT_CONVERSION = 10;
+const WEIGHT_CONVERSION = 10;
+let isLoading = false;
+
 const $ = selector => document.querySelector(selector);
 const searchBar = $("#searchBar");
 const searchBtn = $("#searchBtn");
@@ -10,28 +18,30 @@ const abilities = $("#abilities");
 const pokemonImage = $("#pokemonImage");
 const searchSection = $("#searchSection");
 const errorText = $("#error");
+const randomBtn = $("#randomBtn");
 
 searchBtn.addEventListener("click", () => searchPokemon(searchBar.value));
+randomBtn.addEventListener("click", () => randomPokemon());
+
 searchBar.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         searchPokemon(searchBar.value);
     }
 });
 
+
+
 function displayPokemon(data) {
-    errorText.textContent = "";
-    searchBar.value = "";
-    name.textContent = data.name;
-    height.textContent = data.height / 10;
-    weight.textContent = data.weight / 10;
-    type.textContent = getNames(data, "types", "type");
+    name.textContent = capitalize(data.name);
+    height.textContent = data.height / HEIGHT_CONVERSION;
+    weight.textContent = data.weight / WEIGHT_CONVERSION;
+    type.textContent = capitalize(getNames(data, "types", "type"));
     abilities.textContent = getNames(data, "abilities", "ability");
     pokemonImage.src = data.sprites.other["official-artwork"].front_default;
-    searchBar.focus();
 }
 
 function getNames(data, arrayKey, objKey) {
-    const names = data[arrayKey].map(item => item[objKey].name);
+    const names = data[arrayKey].map(item => capitalize(item[objKey].name));
     return names.join(", ")
 }
 
@@ -42,23 +52,41 @@ function clearPokemon() {
     type.textContent = "";
     abilities.textContent = "";
     pokemonImage.src = "";
+    pokemonImage.style.display = "none";
+}
+
+async function fetchPokemon(pokemonName) {
+    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error("Pokemon not found");
+    }
+
+    const data = await response.json();
+    return data;
 }
 
 async function searchPokemon(pokemonName) {
 
+    if (isLoading) {
+        return;
+    }
+    isLoading = true;
+    searchBtn.disabled = true;
+    searchBtn.textContent = "Searching...";
     try {
-
-        pokemonName = pokemonName.trim().toLowerCase();
-        console.log(pokemonName);
-        const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
-        const response = await fetch(url);
-        console.log(response);
-        if (!response.ok) {
-            throw new Error("Pokemon not found");
+        if (typeof (pokemonName) === "string") {
+            pokemonName = pokemonName.trim().toLowerCase();
         }
-        const data = await response.json();
+        console.log(pokemonName);
+        const data = await fetchPokemon(pokemonName);
 
+        errorText.textContent = "";
+        searchBar.value = "";
+        searchBar.focus();
         displayPokemon(data);
+        pokemonImage.style.display = "block";
 
         console.log(data);
     }
@@ -67,4 +95,15 @@ async function searchPokemon(pokemonName) {
         errorText.textContent = error.message;
         console.log(error.message);
     }
+    finally {
+        isLoading = false;
+        searchBtn.disabled = false;
+        searchBtn.textContent = "Search";
+    }
+
+}
+
+function randomPokemon() {
+    const rand = Math.floor(Math.random() * MAX_POKEMON) + 1;
+    searchPokemon(rand);
 }
