@@ -37,6 +37,7 @@ function displayPokemon(data) {
     weight.textContent = data.weight / WEIGHT_CONVERSION;
     type.textContent = capitalize(getNames(data, "types", "type"));
     abilities.textContent = getNames(data, "abilities", "ability");
+    pokemonImage.style.display = "block";
     pokemonImage.src = data.sprites.other["official-artwork"].front_default;
 }
 
@@ -76,9 +77,8 @@ async function searchPokemon(pokemonName) {
     searchBtn.disabled = true;
     searchBtn.textContent = "Searching...";
     try {
-        if (typeof (pokemonName) === "string") {
-            pokemonName = pokemonName.trim().toLowerCase();
-        }
+        pokemonName = String(pokemonName).trim().toLowerCase();
+
         console.log(pokemonName);
         const data = await fetchPokemon(pokemonName);
 
@@ -86,7 +86,6 @@ async function searchPokemon(pokemonName) {
         searchBar.value = "";
         searchBar.focus();
         displayPokemon(data);
-        pokemonImage.style.display = "block";
 
         console.log(data);
     }
