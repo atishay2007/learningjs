@@ -6,6 +6,7 @@ const MAX_POKEMON = 700;
 const HEIGHT_CONVERSION = 10;
 const WEIGHT_CONVERSION = 10;
 let isLoading = false;
+const MAX_STAT = 200;
 
 const $ = selector => document.querySelector(selector);
 const searchBar = $("#searchBar");
@@ -19,6 +20,7 @@ const pokemonImage = $("#pokemonImage");
 const searchSection = $("#searchSection");
 const errorText = $("#error");
 const randomBtn = $("#randomBtn");
+const stats = $("#stats");
 
 searchBtn.addEventListener("click", () => searchPokemon(searchBar.value));
 randomBtn.addEventListener("click", () => randomPokemon());
@@ -54,6 +56,7 @@ function clearPokemon() {
     abilities.textContent = "";
     pokemonImage.src = "";
     pokemonImage.style.display = "none";
+    stats.replaceChildren();
 }
 
 async function fetchPokemon(pokemonName) {
@@ -103,10 +106,42 @@ async function searchPokemon(pokemonName) {
 
 function displayStats(data) {
     stats.replaceChildren();
-    console.log(data.stats);
     for (const stat of data.stats) {
+        // const p = document.createElement("p");
+        // p.textContent = `${capitalize(stat.stat.name)}: ${stat.base_stat}`
+        // stats.appendChild(p);
+
+      
+        const row = document.createElement("div");
+        const name = document.createElement("span");
+        const barContainer = document.createElement("div");
+        const bar = document.createElement("div");
+        const value = document.createElement("span");
+
+        name.textContent = capitalize(stat.stat.name);
+        value.textContent = stat.base_stat;
+        const percentage = stat.base_stat / MAX_STAT * 100;
+        bar.style.width = `${percentage}%`;
+
+        row.classList.add("stat-row");
+        name.classList.add("stat-name");
+        barContainer.classList.add("bar-container");
+        bar.classList.add("bar");
+        value.classList.add("stat-value");
+
+        barContainer.appendChild(bar);
+
+        row.append(name, barContainer, value);
+
+        stats.appendChild(row);
+        //displayMoves(data);
+    }
+}
+function displayMoves(data) {
+    for (const move of data.moves) {
+        console.log(move);
         const p = document.createElement("p");
-        p.textContent = `${capitalize(stat.stat.name)}: ${stat.base_stat}`
+        p.textContent = `${capitalize(move.move.name)}`
         stats.appendChild(p);
     }
 }
