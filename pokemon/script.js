@@ -6,7 +6,6 @@ const MAX_POKEMON = 700;
 const HEIGHT_CONVERSION = 10;
 const WEIGHT_CONVERSION = 10;
 let isLoading = false;
-let isShiny = false;
 let currentPokemon = null;
 const MAX_STAT = 200;
 
@@ -23,13 +22,13 @@ const searchSection = $("#searchSection");
 const errorText = $("#error");
 const randomBtn = $("#randomBtn");
 const stats = $("#stats");
-const shinyBtn = $("#shinyBtn");
+const shinyToggle = $("#shinyToggle");
 
 searchBtn.addEventListener("click", () => searchPokemon(searchBar.value));
 randomBtn.addEventListener("click", () => randomPokemon());
-shinyBtn.addEventListener("click", () => toggleShiny());
-
-
+shinyToggle.addEventListener("change", () => {
+    updatePokemonImage();
+});
 searchBar.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         searchPokemon(searchBar.value);
@@ -56,7 +55,7 @@ function displayInfo(data) {
 function updatePokemonImage() {
     if (!currentPokemon) return;
     pokemonImage.style.display = "block";
-    pokemonImage.src = isShiny
+    pokemonImage.src = shinyToggle.checked
         ? currentPokemon.sprites.other["official-artwork"].front_shiny
         : currentPokemon.sprites.other["official-artwork"].front_default;
 }
@@ -166,10 +165,4 @@ function displayMoves(data) {
 function randomPokemon() {
     const rand = Math.floor(Math.random() * MAX_POKEMON) + 1;
     searchPokemon(rand);
-}
-
-
-function toggleShiny() {
-    isShiny = !isShiny;
-    updatePokemonImage();
 }
